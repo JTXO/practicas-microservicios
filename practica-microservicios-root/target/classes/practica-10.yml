@@ -1,0 +1,28 @@
+version: "2"
+     
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+    - 5672:5672
+    - 5671:5671
+    - 15672:15672
+    networks:
+      - appnet
+   
+  zipkin-server:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=mem
+      - RABBIT_URI=amqp://rabbitmq
+    restart: always
+    depends_on:
+      - rabbitmq
+    networks:
+      - appnet
+    ports:
+      # Port used for the Zipkin UI and HTTP Api
+    - 9411:9411
+networks:
+  appnet:
